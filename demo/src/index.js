@@ -1,16 +1,11 @@
-import React, { Component } from 'react';
-import { render } from 'react-dom';
+import React, { Component } from "react";
+import { render } from "react-dom";
 import "./index.css";
-import Header  from "./components/Header";
-import ImageDemo from "./components/ImageDemo";
+import Header from "./components/Header";
+import { ImageDemo } from "./components/ImageDemo";
 import VideoDemo from "./components/VideoDemo";
 
-
-
-
 class Demo extends Component {
-  
-
   render() {
     return (
       <div className="app">
@@ -20,8 +15,6 @@ class Demo extends Component {
       </div>
     );
   }
-
 }
 
-
-render(<Demo />, document.querySelector('#demo'));
+render(<Demo />, document.querySelector("#demo"));
