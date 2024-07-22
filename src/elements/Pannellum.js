@@ -156,11 +156,11 @@ class Pannellum extends PureComponent {
               clickHandlerArgs: hotspot.props.handleClickArg
                 ? hotspot.props.handleClickArg
                 : { name: "test" },
-              dragHandlerFunc: hotspot.props.dragHandlerFunc
-                ? hotspot.props.dragHandlerFunc
+              dragHandlerFunc: hotspot.props.handleDrag
+                ? hotspot.props.handleDrag
                 : this.handleDragHotspot,
-              dragHandlerArgs: hotspot.props.handleClickArg
-                ? hotspot.props.dragHandlerArgs
+              dragHandlerArgs: hotspot.props.handleDragArg
+                ? hotspot.props.handleDragArg
                 : { name: "test" },
             });
           default:
@@ -276,10 +276,12 @@ class Pannellum extends PureComponent {
   }
 
   handleClickHotspot = (e, args) => {
-    //console.log("hotspot clicked", args.name);
+    console.log("hotspot clicked", args.name);
   };
-  handleDragHotspot = (e, args) => {
-    console.log(" DRAGGED");
+
+
+  handleDragHotspot = (newCoords) => {
+    console.log(" DRAGGED", newCoords);
   };
 
   hotspotTooltip = (hotSpotDiv, args) => {
