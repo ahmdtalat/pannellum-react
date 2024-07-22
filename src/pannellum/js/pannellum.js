@@ -910,9 +910,13 @@ window.pannellum = (function (window, document, undefined) {
       var coords = mouseEventToCoords(event);
       hs.pitch = coords[0];
       hs.yaw = coords[1];
-      console.log({ pitch: coords[0], yaw: coords[1] });
+
       renderHotSpot(hs);
+
+
+      hs.dragHandlerFunc({ pitch: coords[0], yaw: coords[1] });
     }
+
 
     /**
      * Event handler for mouse moves. Pans center of view.
@@ -966,8 +970,6 @@ window.pannellum = (function (window, document, undefined) {
      * @private
      */
     function onDocumentMouseUp(event) {
-      if (draggingHotSpot && draggingHotSpot.dragHandlerFunc)
-        draggingHotSpot.dragHandlerFunc(event, draggingHotSpot.dragHandlerArgs);
       draggingHotSpot = null;
 
       if (!isUserInteracting) {

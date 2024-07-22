@@ -18,10 +18,6 @@ export default class ImageDemo extends Component {
 
   handleClickImage = (evt, args) => {};
 
-  dragImageHandler = (evt, args) => {
-    console.log("draaag", args.name);
-  };
-
   handleClick = () => {
     this.setState({
       mediaPhoto: myImage2,
@@ -33,24 +29,9 @@ export default class ImageDemo extends Component {
     return (
       <div className="image_main">
         <div style={{ display: "flex", flexDirection: "row" }}>
-          <button
-            onClick={() => this.setState((prevState) => ({ author: "change" }))}
-          >
-            {" "}
-            change author{" "}
-          </button>
-          <button
-            onClick={() =>
-              this.setState((prevState) => ({ yaww: prevState.yaww + 10 }))
-            }
-          >
-            {" "}
-            change yaw{" "}
-          </button>
-          <button onClick={() => this.setState({ updateText: "after update" })}>
-            {" "}
-            Should not update{" "}
-          </button>
+          <button onClick={() => this.setState((prevState) => ({ author: "change" }))}> change author </button>
+          <button onClick={() => this.setState((prevState) => ({ yaww: prevState.yaww + 10 }))}> change yaw </button>
+          <button onClick={() => this.setState({ updateText: "after update" })}> Should not update </button>
           <h3>{this.state.updateText}</h3>
           <button
             onClick={() => {
@@ -60,11 +41,7 @@ export default class ImageDemo extends Component {
             {" "}
             enable{" "}
           </button>
-          <div>
-            {this.state.test && (
-              <button onClick={this.handleClick}> disable </button>
-            )}
-          </div>
+          <div>{this.state.test && <button onClick={this.handleClick}> disable </button>}</div>
         </div>
         <h2 className="section_title">Image Component</h2>
         <div className="pannellum_div">
@@ -80,31 +57,23 @@ export default class ImageDemo extends Component {
             author={this.state.author}
             title=""
           >
-            {/* <Pannellum.Hotspot
-              type="info"
-              pitch={11}
-              yaw={-167}
-              text="Info Hotspot Text 3"
-              URL="https://github.com/farminf"
-            /> */}
             <Pannellum.Hotspot
               type="custom"
               pitch={11}
               yaw={-167}
               handleClick={(evt, args) => this.handleClickImage(evt, args)}
               handleClickArg={{ name: "test" }}
-              dragHandlerFunc={(evt, args) => this.handleClickImage(evt, args)}
-              dragHandlerArgs={{ name: "test 1" }}
             />
             <Pannellum.Hotspot
+              draggable
               type="custom"
               pitch={31}
               yaw={150}
-              draggable
-              handleClick={(evt, args) => this.handleClickImage(evt, args)}
-              handleClickArg={{ name: "test" }}
-              dragHandlerFunc={(evt, args) => this.dragImageHandler(evt, args)}
-              dragHandlerArgs={{ name: "test 2" }}
+              cssClass="custom-hotspot-fdsakjfdaskj"
+              handleDrag={(newCoords) => {
+                console.log({ newCoords });
+              }}
+              handleDragArg={{ name: "test 2" }}
             />
           </Pannellum>
 
@@ -126,7 +95,7 @@ export default class ImageDemo extends Component {
         draggable
         keyboardZoom
         mouseZoom
-        preview=""      
+        preview=""
         previewAuthor=""
         previewTitle=""
         showControls
@@ -143,7 +112,7 @@ export default class ImageDemo extends Component {
         onTouchend={(evt)=>{console.log("Touch End", evt);}}
         hotspotDebug={false}
     >
-        <Pannellum.Hotspot 
+        <Pannellum.Hotspot
         type="info"
         pitch={11}
         yaw={-167}
@@ -151,13 +120,17 @@ export default class ImageDemo extends Component {
         URL="https://github.com/farminf"
         />
 
-        <Pannellum.Hotspot 
-        type="custom"
-        pitch={31}
-        yaw={150}
-        handleClick={(evt , args) => this.handleClickImage(evt , args)}
-        handleClickArg={{ "name":"test" }}
-        />
+        <Pannellum.Hotspot
+              draggable
+              type="custom"
+              pitch={31}
+              yaw={150}
+              cssClass="custom-hotspot-fdsakjfdaskj"
+              handleDrag={(newCoords) => {
+                console.log({ newCoords });
+              }}
+              handleDragArg={{ name: "test 2" }}
+            />
 
     </Pannellum>
                 `}
