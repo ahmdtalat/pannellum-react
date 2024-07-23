@@ -8,9 +8,9 @@ import "../pannellum/js/pannellum.js";
 import "../pannellum/js/RequestAnimationFrame";
 
 const Pannellum = (props) => {
-  const [id] = useState(Math.random().toString(36).substr(2, 9));
-  const panoramaRef = useRef(null);
   const { children } = props;
+  const panoramaRef = useRef(null);
+  const [id] = useState(Math.random().toString(36).substr(2, 9));
 
   const handleClickHotspot = (e, args) => {
     console.log("hotspot clicked", args.name);
@@ -113,7 +113,7 @@ const Pannellum = (props) => {
       onRender: props.onRender,
     };
 
-    if (state === "update" && panoramaRef.current) {
+    if (state === "update" && panoramaRef.current?.destroy) {
       panoramaRef.current.destroy();
     }
 
@@ -131,17 +131,22 @@ const Pannellum = (props) => {
   };
 
   useEffect(() => {
-    renderImage("mount");
-    return () => {
-      if (panoramaRef.current) {
-        panoramaRef.current.destroy();
-      }
-    };
-  }, []);
-
-  useEffect(() => {
     renderImage("update");
-  }, [props]);
+  }, [
+    props.image,
+    props.width,
+    props.height,
+    props.compass,
+    props.title,
+    props.author,
+    props.preview,
+    props.previewTitle,
+    props.previewAuthor,
+    props.showZoomCtrl,
+    props.showFullscreenCtrl,
+    props.showControls,
+    props.children.length,
+  ]);
 
   useEffect(() => {
     if (panoramaRef.current) {
@@ -163,6 +168,16 @@ const Pannellum = (props) => {
     props.minPitch,
     props.maxPitch,
   ]);
+
+  useEffect(() => {
+    renderImage("mount");
+
+    return () => {
+      if (panoramaRef.current) {
+        panoramaRef.current.destroy();
+      }
+    };
+  }, []);
 
   const { width, height } = props;
   const divStyle = {

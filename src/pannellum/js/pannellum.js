@@ -103,9 +103,7 @@ window.pannellum = (function (window, document, undefined) {
       disableKeyboardCtrl: false,
       crossOrigin: "anonymous",
       touchPanSpeedCoeffFactor: 1,
-      capturedKeyNumbers: [
-        16, 17, 27, 37, 38, 39, 40, 61, 65, 68, 83, 87, 107, 109, 173, 187, 189,
-      ],
+      capturedKeyNumbers: [16, 17, 27, 37, 38, 39, 40, 61, 65, 68, 83, 87, 107, 109, 173, 187, 189],
     };
 
     // Translatable / configurable strings
@@ -125,8 +123,7 @@ window.pannellum = (function (window, document, undefined) {
         "Due to iOS 8's broken WebGL implementation, only " +
         "progressive encoded JPEGs work for your device (this " +
         "panorama uses standard encoding).",
-      genericWebGLError:
-        "Your browser does not have the necessary WebGL support to display this panorama.",
+      genericWebGLError: "Your browser does not have the necessary WebGL support to display this panorama.",
       textureSizeError:
         "This panorama is too big for your device! It's " +
         "%spx wide, but your device only supports images up to " +
@@ -136,10 +133,7 @@ window.pannellum = (function (window, document, undefined) {
     };
 
     // Initialize container
-    container =
-      typeof container === "string"
-        ? document.getElementById(container)
-        : container;
+    container = typeof container === "string" ? document.getElementById(container) : container;
     container.classList.add("pnlm-container");
     container.tabIndex = 0;
 
@@ -159,8 +153,7 @@ window.pannellum = (function (window, document, undefined) {
     // Display about information on right click
     var aboutMsg = document.createElement("span");
     aboutMsg.className = "pnlm-about-msg";
-    aboutMsg.innerHTML =
-      '<a href="https://pannellum.org/" target="_blank">Pannellum</a>';
+    aboutMsg.innerHTML = '<a href="https://pannellum.org/" target="_blank">Pannellum</a>';
     uiContainer.appendChild(aboutMsg);
     dragFix.addEventListener("contextmenu", aboutMessage);
 
@@ -169,20 +162,21 @@ window.pannellum = (function (window, document, undefined) {
 
     // Hot spot debug indicator
     var hotSpotDebugIndicator = document.createElement("div");
-    hotSpotDebugIndicator.className =
-      "pnlm-sprite pnlm-hot-spot-debug-indicator";
+    hotSpotDebugIndicator.className = "pnlm-sprite pnlm-hot-spot-debug-indicator";
     uiContainer.appendChild(hotSpotDebugIndicator);
 
     // Panorama info
     infoDisplay.container = document.createElement("div");
-    // infoDisplay.container.className = "pnlm-panorama-info";
+    infoDisplay.container.className = "pnlm-panorama-info";
     infoDisplay.title = document.createElement("div");
     infoDisplay.title.className = "pnlm-title-box";
     infoDisplay.container.appendChild(infoDisplay.title);
     infoDisplay.author = document.createElement("div");
     infoDisplay.author.className = "pnlm-author-box";
     infoDisplay.container.appendChild(infoDisplay.author);
-    uiContainer.appendChild(infoDisplay.container);
+    if (initialConfig["author"] || initialConfig["title"]) {
+      uiContainer.appendChild(infoDisplay.container);
+    }
 
     // Load box
     infoDisplay.load = {};
@@ -322,16 +316,10 @@ window.pannellum = (function (window, document, undefined) {
       fireEvent("messageshown");
 
       clearTimeout(infoDisplay.interactionMsg.timeout);
-      infoDisplay.interactionMsg.removeEventListener(
-        "transitionend",
-        clearInteractionMessage
-      );
+      infoDisplay.interactionMsg.removeEventListener("transitionend", clearInteractionMessage);
       infoDisplay.interactionMsg.timeout = setTimeout(function () {
         infoDisplay.interactionMsg.style.opacity = 0;
-        infoDisplay.interactionMsg.addEventListener(
-          "transitionend",
-          clearInteractionMessage
-        );
+        infoDisplay.interactionMsg.addEventListener("transitionend", clearInteractionMessage);
       }, 2000);
     }
 
@@ -377,11 +365,7 @@ window.pannellum = (function (window, document, undefined) {
         var c = JSON.parse(JSON.stringify(config.multiRes)); // Deep copy
         // Avoid "undefined" in path, check (optional) multiRes.basePath, too
         // Use only multiRes.basePath if it's an absolute URL
-        if (
-          config.basePath &&
-          config.multiRes.basePath &&
-          !/^(?:[a-z]+:)?\/\//i.test(config.multiRes.basePath)
-        ) {
+        if (config.basePath && config.multiRes.basePath && !/^(?:[a-z]+:)?\/\//i.test(config.multiRes.basePath)) {
           c.basePath = config.basePath + config.multiRes.basePath;
         } else if (config.multiRes.basePath) {
           c.basePath = config.multiRes.basePath;
@@ -424,9 +408,7 @@ window.pannellum = (function (window, document, undefined) {
           p = config.cubeMap[i];
           if (p == "null") {
             // support partial cubemap image with explicitly empty faces
-            console.log(
-              "Will use background instead of missing cubemap face " + i
-            );
+            console.log("Will use background instead of missing cubemap face " + i);
             onLoad();
           } else {
             if (config.basePath && !absoluteURL(p)) {
@@ -447,9 +429,7 @@ window.pannellum = (function (window, document, undefined) {
 
         if (config.dynamic !== true) {
           // Still image
-          p = absoluteURL(config.panorama)
-            ? config.panorama
-            : p + config.panorama;
+          p = absoluteURL(config.panorama) ? config.panorama : p + config.panorama;
 
           panoImage.onload = function () {
             window.URL.revokeObjectURL(this.src); // Clean up
@@ -463,9 +443,7 @@ window.pannellum = (function (window, document, undefined) {
               var a = document.createElement("a");
               a.href = p;
               a.textContent = a.href;
-              anError(
-                config.strings.fileAccessError.replace("%s", a.outerHTML)
-              );
+              anError(config.strings.fileAccessError.replace("%s", a.outerHTML));
             }
             var img = this.response;
             parseGPanoXMP(img);
@@ -490,8 +468,7 @@ window.pannellum = (function (window, document, undefined) {
                 numerator = e.loaded;
                 denominator = e.total;
               }
-              infoDisplay.load.msg.innerHTML =
-                numerator + " / " + denominator + " " + unit;
+              infoDisplay.load.msg.innerHTML = numerator + " / " + denominator + " " + unit;
             } else {
               // Display loading spinner
               infoDisplay.load.lbox.style.display = "block";
@@ -512,7 +489,6 @@ window.pannellum = (function (window, document, undefined) {
       }
 
       if (config.draggable) {
-        console.log("drag");
         uiContainer.classList.add("pnlm-grab");
       }
       uiContainer.classList.remove("pnlm-grabbing");
@@ -526,11 +502,7 @@ window.pannellum = (function (window, document, undefined) {
      */
     function absoluteURL(url) {
       // From http://stackoverflow.com/a/19709846
-      return (
-        new RegExp("^(?:[a-z]+:)?//", "i").test(url) ||
-        url[0] == "/" ||
-        url.slice(0, 5) == "blob:"
-      );
+      return new RegExp("^(?:[a-z]+:)?//", "i").test(url) || url[0] == "/" || url.slice(0, 5) == "blob:";
     }
 
     /**
@@ -549,40 +521,16 @@ window.pannellum = (function (window, document, undefined) {
         document.addEventListener("mousemove", onDocumentMouseMove, false);
         document.addEventListener("mouseup", onDocumentMouseUp, false);
         if (config.mouseZoom) {
-          uiContainer.addEventListener(
-            "mousewheel",
-            onDocumentMouseWheel,
-            false
-          );
-          uiContainer.addEventListener(
-            "DOMMouseScroll",
-            onDocumentMouseWheel,
-            false
-          );
+          uiContainer.addEventListener("mousewheel", onDocumentMouseWheel, false);
+          uiContainer.addEventListener("DOMMouseScroll", onDocumentMouseWheel, false);
         }
         if (config.doubleClickZoom) {
           dragFix.addEventListener("dblclick", onDocumentDoubleClick, false);
         }
-        uiContainer.addEventListener(
-          "mozfullscreenchange",
-          onFullScreenChange,
-          false
-        );
-        uiContainer.addEventListener(
-          "webkitfullscreenchange",
-          onFullScreenChange,
-          false
-        );
-        uiContainer.addEventListener(
-          "msfullscreenchange",
-          onFullScreenChange,
-          false
-        );
-        uiContainer.addEventListener(
-          "fullscreenchange",
-          onFullScreenChange,
-          false
-        );
+        uiContainer.addEventListener("mozfullscreenchange", onFullScreenChange, false);
+        uiContainer.addEventListener("webkitfullscreenchange", onFullScreenChange, false);
+        uiContainer.addEventListener("msfullscreenchange", onFullScreenChange, false);
+        uiContainer.addEventListener("fullscreenchange", onFullScreenChange, false);
         window.addEventListener("resize", onDocumentResize, false);
         window.addEventListener("orientationchange", onDocumentResize, false);
         if (!config.disableKeyboardCtrl) {
@@ -591,10 +539,7 @@ window.pannellum = (function (window, document, undefined) {
           container.addEventListener("blur", clearKeys, false);
         }
         document.addEventListener("mouseleave", onDocumentMouseUp, false);
-        if (
-          document.documentElement.style.pointerAction === "" &&
-          document.documentElement.style.touchAction === ""
-        ) {
+        if (document.documentElement.style.pointerAction === "" && document.documentElement.style.touchAction === "") {
           dragFix.addEventListener("pointerdown", onDocumentPointerDown, false);
           dragFix.addEventListener("pointermove", onDocumentPointerMove, false);
           dragFix.addEventListener("pointerup", onDocumentPointerUp, false);
@@ -631,9 +576,7 @@ window.pannellum = (function (window, document, undefined) {
 
         // This awful browser specific test exists because iOS 8 does not work
         // with non-progressive encoded JPEGs.
-        if (
-          navigator.userAgent.toLowerCase().match(/(iphone|ipod|ipad).* os 8_/)
-        ) {
+        if (navigator.userAgent.toLowerCase().match(/(iphone|ipod|ipad).* os 8_/)) {
           var flagIndex = img.indexOf("\xff\xc2");
           if (flagIndex < 0 || flagIndex > 65536) {
             anError(config.strings.iOS8WebGLError);
@@ -648,14 +591,10 @@ window.pannellum = (function (window, document, undefined) {
           var getTag = function (tag) {
             var result;
             if (xmpData.indexOf(tag + '="') >= 0) {
-              result = xmpData.substring(
-                xmpData.indexOf(tag + '="') + tag.length + 2
-              );
+              result = xmpData.substring(xmpData.indexOf(tag + '="') + tag.length + 2);
               result = result.substring(0, result.indexOf('"'));
             } else if (xmpData.indexOf(tag + ">") >= 0) {
-              result = xmpData.substring(
-                xmpData.indexOf(tag + ">") + tag.length + 1
-              );
+              result = xmpData.substring(xmpData.indexOf(tag + ">") + tag.length + 1);
               result = result.substring(0, result.indexOf("<"));
             }
             if (result !== undefined) {
@@ -691,15 +630,9 @@ window.pannellum = (function (window, document, undefined) {
               config.vaov = (xmp.croppedHeight / xmp.fullHeight) * 180;
             }
             if (specifiedPhotoSphereExcludes.indexOf("vOffset") < 0) {
-              config.vOffset =
-                ((xmp.topPixels + xmp.croppedHeight / 2) / xmp.fullHeight -
-                  0.5) *
-                -180;
+              config.vOffset = ((xmp.topPixels + xmp.croppedHeight / 2) / xmp.fullHeight - 0.5) * -180;
             }
-            if (
-              xmp.heading !== null &&
-              specifiedPhotoSphereExcludes.indexOf("northOffset") < 0
-            ) {
+            if (xmp.heading !== null && specifiedPhotoSphereExcludes.indexOf("northOffset") < 0) {
               // TODO: make sure this works correctly for partial panoramas
               config.northOffset = xmp.heading;
               if (config.compass !== false) {
@@ -913,10 +846,8 @@ window.pannellum = (function (window, document, undefined) {
 
       renderHotSpot(hs);
 
-
       hs.dragHandlerFunc({ pitch: coords[0], yaw: coords[1] });
     }
-
 
     /**
      * Event handler for mouse moves. Pans center of view.
@@ -934,8 +865,7 @@ window.pannellum = (function (window, document, undefined) {
         var pos = mousePosition(event);
         //TODO: This still isn't quite right
         var yaw =
-          ((((Math.atan((onPointerDownPointerX / canvasWidth) * 2 - 1) -
-            Math.atan((pos.x / canvasWidth) * 2 - 1)) *
+          ((((Math.atan((onPointerDownPointerX / canvasWidth) * 2 - 1) - Math.atan((pos.x / canvasWidth) * 2 - 1)) *
             180) /
             Math.PI) *
             config.hfov) /
@@ -945,17 +875,10 @@ window.pannellum = (function (window, document, undefined) {
         config.yaw = yaw;
 
         var vfov =
-          (2 *
-            Math.atan(
-              (Math.tan((config.hfov / 360) * Math.PI) * canvasHeight) /
-                canvasWidth
-            ) *
-            180) /
-          Math.PI;
+          (2 * Math.atan((Math.tan((config.hfov / 360) * Math.PI) * canvasHeight) / canvasWidth) * 180) / Math.PI;
 
         var pitch =
-          ((((Math.atan((pos.y / canvasHeight) * 2 - 1) -
-            Math.atan((onPointerDownPointerY / canvasHeight) * 2 - 1)) *
+          ((((Math.atan((pos.y / canvasHeight) * 2 - 1) - Math.atan((onPointerDownPointerY / canvasHeight) * 2 - 1)) *
             180) /
             Math.PI) *
             vfov) /
@@ -1019,8 +942,7 @@ window.pannellum = (function (window, document, undefined) {
         onPointerDownPointerX += (pos1.x - pos0.x) * 0.5;
         onPointerDownPointerY += (pos1.y - pos0.y) * 0.5;
         onPointerDownPointerDist = Math.sqrt(
-          (pos0.x - pos1.x) * (pos0.x - pos1.x) +
-            (pos0.y - pos1.y) * (pos0.y - pos1.y)
+          (pos0.x - pos1.x) * (pos0.x - pos1.x) + (pos0.y - pos1.y) * (pos0.y - pos1.y)
         );
       }
       isUserInteracting = true;
@@ -1058,10 +980,7 @@ window.pannellum = (function (window, document, undefined) {
           var pos1 = mousePosition(event.targetTouches[1]);
           clientX += (pos1.x - pos0.x) * 0.5;
           clientY += (pos1.y - pos0.y) * 0.5;
-          var clientDist = Math.sqrt(
-            (pos0.x - pos1.x) * (pos0.x - pos1.x) +
-              (pos0.y - pos1.y) * (pos0.y - pos1.y)
-          );
+          var clientDist = Math.sqrt((pos0.x - pos1.x) * (pos0.x - pos1.x) + (pos0.y - pos1.y) * (pos0.y - pos1.y));
           setHfov(config.hfov + (onPointerDownPointerDist - clientDist) * 0.1);
           onPointerDownPointerDist = clientDist;
         }
@@ -1073,8 +992,7 @@ window.pannellum = (function (window, document, undefined) {
         //
         // Currently this seems to *roughly* keep initial drag/pan start position close to
         // the user's finger while panning regardless of zoom level / config.hfov value.
-        var touchmovePanSpeedCoeff =
-          (config.hfov / 360) * config.touchPanSpeedCoeffFactor;
+        var touchmovePanSpeedCoeff = (config.hfov / 360) * config.touchPanSpeedCoeffFactor;
 
         if (
           !fullscreenActive &&
@@ -1082,14 +1000,11 @@ window.pannellum = (function (window, document, undefined) {
           event.targetTouches.length != 2
         ) {
           if (onPointerDownPointerX != clientX) {
-            if (config.dragConfirm == "yaw")
-              showInteractionMessage(config.strings.twoTouchXActivate);
+            if (config.dragConfirm == "yaw") showInteractionMessage(config.strings.twoTouchXActivate);
             else showInteractionMessage(config.strings.twoTouchActivate);
           }
         } else {
-          var yaw =
-            (onPointerDownPointerX - clientX) * touchmovePanSpeedCoeff +
-            onPointerDownYaw;
+          var yaw = (onPointerDownPointerX - clientX) * touchmovePanSpeedCoeff + onPointerDownYaw;
           speed.yaw = ((yaw - config.yaw) % 360) * 0.2;
           config.yaw = yaw;
         }
@@ -1100,22 +1015,17 @@ window.pannellum = (function (window, document, undefined) {
           event.targetTouches.length != 2
         ) {
           if (onPointerDownPointerY != clientY) {
-            if (config.dragConfirm == "pitch")
-              showInteractionMessage(config.strings.twoTouchYActivate);
+            if (config.dragConfirm == "pitch") showInteractionMessage(config.strings.twoTouchYActivate);
             else showInteractionMessage(config.strings.twoTouchActivate);
           }
         } else {
-          var pitch =
-            (clientY - onPointerDownPointerY) * touchmovePanSpeedCoeff +
-            onPointerDownPitch;
+          var pitch = (clientY - onPointerDownPointerY) * touchmovePanSpeedCoeff + onPointerDownPitch;
           speed.pitch = (pitch - config.pitch) * 0.2;
           config.pitch = pitch;
         }
 
         if (
-          (config.dragConfirm == "yaw" ||
-            config.dragConfirm == "pitch" ||
-            config.dragConfirm == "both") &&
+          (config.dragConfirm == "yaw" || config.dragConfirm == "pitch" || config.dragConfirm == "both") &&
           event.targetTouches.length == 2
         ) {
           clearInteractionMessage();
@@ -1220,10 +1130,7 @@ window.pannellum = (function (window, document, undefined) {
      */
     function onDocumentMouseWheel(event) {
       // Only do something if the panorama is loaded and mouse wheel zoom is enabled
-      if (
-        !loaded ||
-        (config.mouseZoom == "fullscreenonly" && !fullscreenActive)
-      ) {
+      if (!loaded || (config.mouseZoom == "fullscreenonly" && !fullscreenActive)) {
         return;
       }
 
@@ -1497,12 +1404,9 @@ window.pannellum = (function (window, document, undefined) {
         // Pan
         if (newTime - prevTime > 0.001) {
           var timeDiff = (newTime - prevTime) / 1000;
-          var yawDiff =
-            ((speed.yaw / timeDiff) * diff - config.autoRotate * 0.2) *
-            timeDiff;
+          var yawDiff = ((speed.yaw / timeDiff) * diff - config.autoRotate * 0.2) * timeDiff;
           yawDiff =
-            (-config.autoRotate > 0 ? 1 : -1) *
-            Math.min(Math.abs(config.autoRotate * timeDiff), Math.abs(yawDiff));
+            (-config.autoRotate > 0 ? 1 : -1) * Math.min(Math.abs(config.autoRotate * timeDiff), Math.abs(yawDiff));
           config.yaw += yawDiff;
         }
 
@@ -1537,23 +1441,11 @@ window.pannellum = (function (window, document, undefined) {
         var friction = 0.85;
 
         // Yaw
-        if (
-          !keysDown[4] &&
-          !keysDown[5] &&
-          !keysDown[8] &&
-          !keysDown[9] &&
-          !animatedMove.yaw
-        ) {
+        if (!keysDown[4] && !keysDown[5] && !keysDown[8] && !keysDown[9] && !animatedMove.yaw) {
           config.yaw += speed.yaw * diff * friction;
         }
         // Pitch
-        if (
-          !keysDown[2] &&
-          !keysDown[3] &&
-          !keysDown[6] &&
-          !keysDown[7] &&
-          !animatedMove.pitch
-        ) {
+        if (!keysDown[2] && !keysDown[3] && !keysDown[6] && !keysDown[7] && !animatedMove.pitch) {
           config.pitch += speed.pitch * diff * friction;
         }
         // Zoom
@@ -1565,8 +1457,7 @@ window.pannellum = (function (window, document, undefined) {
       prevTime = newTime;
       if (diff > 0) {
         speed.yaw = speed.yaw * 0.8 + ((config.yaw - prevYaw) / diff) * 0.2;
-        speed.pitch =
-          speed.pitch * 0.8 + ((config.pitch - prevPitch) / diff) * 0.2;
+        speed.pitch = speed.pitch * 0.8 + ((config.pitch - prevPitch) / diff) * 0.2;
         speed.hfov = speed.hfov * 0.8 + ((config.hfov - prevZoom) / diff) * 0.2;
 
         // Limit speed
@@ -1595,14 +1486,8 @@ window.pannellum = (function (window, document, undefined) {
      */
     function animateMove(axis) {
       var t = animatedMove[axis];
-      var normTime = Math.min(
-        1,
-        Math.max((Date.now() - t.startTime) / 1000 / (t.duration / 1000), 0)
-      );
-      var result =
-        t.startPosition +
-        config.animationTimingFunction(normTime) *
-          (t.endPosition - t.startPosition);
+      var normTime = Math.min(1, Math.max((Date.now() - t.startTime) / 1000 / (t.duration / 1000), 0));
+      var result = t.startPosition + config.animationTimingFunction(normTime) * (t.endPosition - t.startPosition);
       if (
         (t.endPosition > t.startPosition && result >= t.endPosition) ||
         (t.endPosition < t.startPosition && result <= t.endPosition) ||
@@ -1696,16 +1581,12 @@ window.pannellum = (function (window, document, undefined) {
           _this.lookAt(origPitch, undefined, origHfov, 3000);
         }
         requestAnimationFrame(animate);
-      } else if (
-        renderer &&
-        (renderer.isLoading() || (config.dynamic === true && update))
-      ) {
+      } else if (renderer && (renderer.isLoading() || (config.dynamic === true && update))) {
         requestAnimationFrame(animate);
       } else {
         animating = false;
         prevTime = undefined;
-        var autoRotateStartTime =
-          config.autoRotateInactivityDelay - (Date.now() - latestInteraction);
+        var autoRotateStartTime = config.autoRotateInactivityDelay - (Date.now() - latestInteraction);
         if (autoRotateStartTime > 0) {
           autoRotateStart = setTimeout(function () {
             config.autoRotate = autoRotateSpeed;
@@ -1743,13 +1624,7 @@ window.pannellum = (function (window, document, undefined) {
         if (config.avoidShowingBackground) {
           var canvas = renderer.getCanvas(),
             hfov2 = config.hfov / 2,
-            vfov2 =
-              (Math.atan2(
-                Math.tan((hfov2 / 180) * Math.PI),
-                canvas.width / canvas.height
-              ) *
-                180) /
-              Math.PI,
+            vfov2 = (Math.atan2(Math.tan((hfov2 / 180) * Math.PI), canvas.width / canvas.height) * 180) / Math.PI,
             transposed = config.vaov > config.haov;
           if (transposed) {
             voffcut =
@@ -1786,11 +1661,7 @@ window.pannellum = (function (window, document, undefined) {
 
         // Check if we autoRotate in a limited by min and max yaw
         // If so reverse direction
-        if (
-          config.autoRotate !== false &&
-          tmpyaw != config.yaw &&
-          prevTime !== undefined
-        ) {
+        if (config.autoRotate !== false && tmpyaw != config.yaw && prevTime !== undefined) {
           // this condition prevents changing the direction initially
           config.autoRotate *= -1;
         }
@@ -1798,12 +1669,7 @@ window.pannellum = (function (window, document, undefined) {
         // Ensure the calculated pitch is within min and max allowed
         var canvas = renderer.getCanvas();
         var vfov =
-          ((2 *
-            Math.atan(
-              Math.tan((config.hfov / 180) * Math.PI * 0.5) /
-                (canvas.width / canvas.height)
-            )) /
-            Math.PI) *
+          ((2 * Math.atan(Math.tan((config.hfov / 180) * Math.PI * 0.5) / (canvas.width / canvas.height))) / Math.PI) *
           180;
         var minPitch = config.minPitch + vfov / 2,
           maxPitch = config.maxPitch - vfov / 2;
@@ -1820,21 +1686,16 @@ window.pannellum = (function (window, document, undefined) {
         }
         config.pitch = Math.max(minPitch, Math.min(maxPitch, config.pitch));
 
-        renderer.render(
-          (config.pitch * Math.PI) / 180,
-          (config.yaw * Math.PI) / 180,
-          (config.hfov * Math.PI) / 180,
-          { roll: (config.roll * Math.PI) / 180 }
-        );
+        renderer.render((config.pitch * Math.PI) / 180, (config.yaw * Math.PI) / 180, (config.hfov * Math.PI) / 180, {
+          roll: (config.roll * Math.PI) / 180,
+        });
 
         renderHotSpots();
 
         // Update compass
         if (config.compass) {
-          compass.style.transform =
-            "rotate(" + (-config.yaw - config.northOffset) + "deg)";
-          compass.style.webkitTransform =
-            "rotate(" + (-config.yaw - config.northOffset) + "deg)";
+          compass.style.transform = "rotate(" + (-config.yaw - config.northOffset) + "deg)";
+          compass.style.webkitTransform = "rotate(" + (-config.yaw - config.northOffset) + "deg)";
         }
 
         if (config.onRender) {
@@ -1880,15 +1741,9 @@ window.pannellum = (function (window, document, undefined) {
      * @returns {Number[]} [phi angle, theta angle, psi angle]
      */
     Quaternion.prototype.toEulerAngles = function () {
-      var phi = Math.atan2(
-          2 * (this.w * this.x + this.y * this.z),
-          1 - 2 * (this.x * this.x + this.y * this.y)
-        ),
+      var phi = Math.atan2(2 * (this.w * this.x + this.y * this.z), 1 - 2 * (this.x * this.x + this.y * this.y)),
         theta = Math.asin(2 * (this.w * this.y - this.z * this.x)),
-        psi = Math.atan2(
-          2 * (this.w * this.z + this.x * this.y),
-          1 - 2 * (this.y * this.y + this.z * this.z)
-        );
+        psi = Math.atan2(2 * (this.w * this.z + this.x * this.y), 1 - 2 * (this.y * this.y + this.z * this.z));
       return [phi, theta, psi];
     };
 
@@ -1930,16 +1785,10 @@ window.pannellum = (function (window, document, undefined) {
       // Convert Tait-Bryan angles to quaternion
       var quaternion = taitBryanToQuaternion(alpha, beta, gamma);
       // Apply world transform
-      quaternion = quaternion.multiply(
-        new Quaternion(Math.sqrt(0.5), -Math.sqrt(0.5), 0, 0)
-      );
+      quaternion = quaternion.multiply(new Quaternion(Math.sqrt(0.5), -Math.sqrt(0.5), 0, 0));
       // Apply screen transform
-      var angle = window.orientation
-        ? (-window.orientation * Math.PI) / 180 / 2
-        : 0;
-      return quaternion.multiply(
-        new Quaternion(Math.cos(angle), 0, -Math.sin(angle), 0)
-      );
+      var angle = window.orientation ? (-window.orientation * Math.PI) / 180 / 2 : 0;
+      return quaternion.multiply(new Quaternion(Math.cos(angle), 0, -Math.sin(angle), 0));
     }
 
     /**
@@ -2004,11 +1853,7 @@ window.pannellum = (function (window, document, undefined) {
         if (event.type == "webgl error" || event.type == "no webgl") {
           anError();
         } else if (event.type == "webgl size error") {
-          anError(
-            config.strings.textureSizeError
-              .replace("%s", event.width)
-              .replace("%s", event.maxWidth)
-          );
+          anError(config.strings.textureSizeError.replace("%s", event.width).replace("%s", event.maxWidth));
         } else {
           anError(config.strings.unknownError);
           throw event;
@@ -2072,9 +1917,7 @@ window.pannellum = (function (window, document, undefined) {
       div.tabIndex = -1;
       div.className = "pnlm-hotspot-base";
       if (hs.cssClass) div.className += " " + hs.cssClass;
-      else
-        div.className +=
-          " pnlm-hotspot pnlm-sprite pnlm-" + escapeHTML(hs.type);
+      else div.className += " pnlm-hotspot pnlm-sprite pnlm-" + escapeHTML(hs.type);
 
       var span = document.createElement("span");
       if (hs.text) span.innerHTML = escapeHTML(hs.text);
@@ -2083,8 +1926,7 @@ window.pannellum = (function (window, document, undefined) {
       if (hs.video) {
         var video = document.createElement("video"),
           vidp = hs.video;
-        if (config.basePath && !absoluteURL(vidp))
-          vidp = config.basePath + vidp;
+        if (config.basePath && !absoluteURL(vidp)) vidp = config.basePath + vidp;
         video.src = sanitizeURL(vidp);
         video.controls = true;
         video.style.width = hs.width + "px";
@@ -2092,8 +1934,7 @@ window.pannellum = (function (window, document, undefined) {
         span.appendChild(video);
       } else if (hs.image) {
         var imgp = hs.image;
-        if (config.basePath && !absoluteURL(imgp))
-          imgp = config.basePath + imgp;
+        if (config.basePath && !absoluteURL(imgp)) imgp = config.basePath + imgp;
         a = document.createElement("a");
         a.href = sanitizeURL(hs.URL ? hs.URL : imgp, true);
         if (config.targetBlank) {
@@ -2128,12 +1969,7 @@ window.pannellum = (function (window, document, undefined) {
           div.onclick = div.ontouchend = function () {
             if (!div.clicked) {
               div.clicked = true;
-              loadScene(
-                hs.sceneId,
-                hs.targetPitch,
-                hs.targetYaw,
-                hs.targetHfov
-              );
+              loadScene(hs.sceneId, hs.targetPitch, hs.targetYaw, hs.targetHfov);
             }
             return false;
           };
@@ -2151,8 +1987,7 @@ window.pannellum = (function (window, document, undefined) {
         div.classList.add("pnlm-tooltip");
         div.appendChild(span);
         span.style.width = span.scrollWidth - 20 + "px";
-        span.style.marginLeft =
-          -(span.scrollWidth - div.offsetWidth) / 2 + "px";
+        span.style.marginLeft = -(span.scrollWidth - div.offsetWidth) / 2 + "px";
         span.style.marginTop = -span.scrollHeight - 12 + "px";
       }
       if (hs.clickHandlerFunc) {
@@ -2163,10 +1998,7 @@ window.pannellum = (function (window, document, undefined) {
           },
           "false"
         );
-        if (
-          document.documentElement.style.pointerAction === "" &&
-          document.documentElement.style.touchAction === ""
-        ) {
+        if (document.documentElement.style.pointerAction === "" && document.documentElement.style.touchAction === "") {
           div.addEventListener(
             "pointerup",
             function (e) {
@@ -2192,10 +2024,7 @@ window.pannellum = (function (window, document, undefined) {
           draggingHotSpot = hs;
         });
 
-        if (
-          document.documentElement.style.pointerAction === "" &&
-          document.documentElement.style.touchAction === ""
-        ) {
+        if (document.documentElement.style.pointerAction === "" && document.documentElement.style.touchAction === "") {
           div.addEventListener("pointerdown", function (e) {
             draggingHotSpot = hs;
           });
@@ -2265,12 +2094,8 @@ window.pannellum = (function (window, document, undefined) {
         configPitchSin = Math.sin((config.pitch * Math.PI) / 180),
         configPitchCos = Math.cos((config.pitch * Math.PI) / 180),
         yawCos = Math.cos(((-hs.yaw + config.yaw) * Math.PI) / 180);
-      var z =
-        hsPitchSin * configPitchSin + hsPitchCos * yawCos * configPitchCos;
-      if (
-        (hs.yaw <= 90 && hs.yaw > -90 && z <= 0) ||
-        ((hs.yaw > 90 || hs.yaw <= -90) && z <= 0)
-      ) {
+      var z = hsPitchSin * configPitchSin + hsPitchCos * yawCos * configPitchCos;
+      if ((hs.yaw <= 90 && hs.yaw > -90 && z <= 0) || ((hs.yaw > 90 || hs.yaw <= -90) && z <= 0)) {
         hs.div.style.visibility = "hidden";
       } else {
         var yawSin = Math.sin(((-hs.yaw + config.yaw) * Math.PI) / 180),
@@ -2283,30 +2108,17 @@ window.pannellum = (function (window, document, undefined) {
           canvasHeight = canvas.clientHeight;
         var coord = [
           ((-canvasWidth / hfovTan) * yawSin * hsPitchCos) / z / 2,
-          ((-canvasWidth / hfovTan) *
-            (hsPitchSin * configPitchCos -
-              hsPitchCos * yawCos * configPitchSin)) /
-            z /
-            2,
+          ((-canvasWidth / hfovTan) * (hsPitchSin * configPitchCos - hsPitchCos * yawCos * configPitchSin)) / z / 2,
         ];
         // Apply roll
         var rollSin = Math.sin((config.roll * Math.PI) / 180),
           rollCos = Math.cos((config.roll * Math.PI) / 180);
-        coord = [
-          coord[0] * rollCos - coord[1] * rollSin,
-          coord[0] * rollSin + coord[1] * rollCos,
-        ];
+        coord = [coord[0] * rollCos - coord[1] * rollSin, coord[0] * rollSin + coord[1] * rollCos];
         // Apply transform
         coord[0] += (canvasWidth - hs.div.offsetWidth) / 2;
         coord[1] += (canvasHeight - hs.div.offsetHeight) / 2;
         var transform =
-          "translate(" +
-          coord[0] +
-          "px, " +
-          coord[1] +
-          "px) translateZ(9999px) rotate(" +
-          config.roll +
-          "deg)";
+          "translate(" + coord[0] + "px, " + coord[1] + "px) translateZ(9999px) rotate(" + config.roll + "deg)";
         hs.div.style.webkitTransform = transform;
         hs.div.style.MozTransform = transform;
         hs.div.style.transform = transform;
@@ -2329,14 +2141,7 @@ window.pannellum = (function (window, document, undefined) {
     function mergeConfig(sceneId) {
       config = {};
       var k, s;
-      var photoSphereExcludes = [
-        "haov",
-        "vaov",
-        "vOffset",
-        "northOffset",
-        "horizonPitch",
-        "horizonRoll",
-      ];
+      var photoSphereExcludes = ["haov", "vaov", "vOffset", "northOffset", "horizonPitch", "horizonRoll"];
       specifiedPhotoSphereExcludes = [];
 
       // Merge default config
@@ -2352,9 +2157,7 @@ window.pannellum = (function (window, document, undefined) {
           if (k == "strings") {
             for (s in initialConfig.default.strings) {
               if (initialConfig.default.strings.hasOwnProperty(s)) {
-                config.strings[s] = escapeHTML(
-                  initialConfig.default.strings[s]
-                );
+                config.strings[s] = escapeHTML(initialConfig.default.strings[s]);
               }
             }
           } else {
@@ -2367,12 +2170,7 @@ window.pannellum = (function (window, document, undefined) {
       }
 
       // Merge current scene config
-      if (
-        sceneId !== null &&
-        sceneId !== "" &&
-        initialConfig.scenes &&
-        initialConfig.scenes[sceneId]
-      ) {
+      if (sceneId !== null && sceneId !== "" && initialConfig.scenes && initialConfig.scenes[sceneId]) {
         var scene = initialConfig.scenes[sceneId];
         for (k in scene) {
           if (scene.hasOwnProperty(k)) {
@@ -2471,19 +2269,17 @@ window.pannellum = (function (window, document, undefined) {
               break;
 
             case "author":
-              infoDisplay.author.innerHTML = config.strings.bylineLabel.replace(
-                "%s",
-                escapeHTML(config[key])
-              );
-              infoDisplay.container.style.display = "inline";
+              if (config[key]) {
+                infoDisplay.author.innerHTML = config.strings.bylineLabel.replace("%s", escapeHTML(config[key]));
+                infoDisplay.container.style.display = "inline";
+              }
               break;
 
             case "fallback":
               var link = document.createElement("a");
               link.href = sanitizeURL(config[key]);
               link.target = "_blank";
-              link.textContent =
-                "Click here to view this panorama in an alternative viewer.";
+              link.textContent = "Click here to view this panorama in an alternative viewer.";
               var message = document.createElement("p");
               message.textContent = "Your browser does not support WebGL.";
               message.appendChild(document.createElement("br"));
@@ -2559,6 +2355,9 @@ window.pannellum = (function (window, document, undefined) {
                 }
               }
               break;
+
+            default:
+              break;
           }
         }
       }
@@ -2617,9 +2416,7 @@ window.pannellum = (function (window, document, undefined) {
      * @private
      */
     function onFullScreenChange() {
-      let isFullScreen =
-        window.innerWidth == screen.width &&
-        window.innerHeight == screen.height;
+      let isFullScreen = window.innerWidth == screen.width && window.innerHeight == screen.height;
       if (
         document.fullscreen ||
         document.mozFullScreen ||
@@ -2627,14 +2424,10 @@ window.pannellum = (function (window, document, undefined) {
         document.msFullscreenElement ||
         isFullScreen
       ) {
-        controls.fullscreen.classList.add(
-          "pnlm-fullscreen-toggle-button-active"
-        );
+        controls.fullscreen.classList.add("pnlm-fullscreen-toggle-button-active");
         fullscreenActive = true;
       } else {
-        controls.fullscreen.classList.remove(
-          "pnlm-fullscreen-toggle-button-active"
-        );
+        controls.fullscreen.classList.remove("pnlm-fullscreen-toggle-button-active");
         fullscreenActive = false;
       }
 
@@ -2676,11 +2469,7 @@ window.pannellum = (function (window, document, undefined) {
       // Keep field of view within bounds
       var minHfov = config.minHfov;
       if (config.type == "multires" && renderer) {
-        minHfov = Math.min(
-          minHfov,
-          renderer.getCanvas().width /
-            ((config.multiRes.cubeResolution / 90) * 0.9)
-        );
+        minHfov = Math.min(minHfov, renderer.getCanvas().width / ((config.multiRes.cubeResolution / 90) * 0.9));
       }
       if (minHfov > config.maxHfov) {
         // Don't change view if bounds don't make sense
@@ -2700,11 +2489,7 @@ window.pannellum = (function (window, document, undefined) {
         var canvas = renderer.getCanvas();
         newHfov = Math.min(
           newHfov,
-          (Math.atan(
-            (Math.tan(((config.maxPitch - config.minPitch) / 360) * Math.PI) /
-              canvas.height) *
-              canvas.width
-          ) *
+          (Math.atan((Math.tan(((config.maxPitch - config.minPitch) / 360) * Math.PI) / canvas.height) * canvas.width) *
             360) /
             Math.PI
         );
@@ -2772,8 +2557,7 @@ window.pannellum = (function (window, document, undefined) {
         if (data !== undefined) {
           fadeImg = new Image();
           fadeImg.className = "pnlm-fade-img";
-          fadeImg.style.transition =
-            "opacity " + config.sceneFadeDuration / 1000 + "s";
+          fadeImg.style.transition = "opacity " + config.sceneFadeDuration / 1000 + "s";
           fadeImg.style.width = "100%";
           fadeImg.style.height = "100%";
           fadeImg.onload = function () {
@@ -2795,10 +2579,7 @@ window.pannellum = (function (window, document, undefined) {
       if (targetYaw === "same") {
         workingYaw = config.yaw;
       } else if (targetYaw === "sameAzimuth") {
-        workingYaw =
-          config.yaw +
-          (config.northOffset || 0) -
-          (initialConfig.scenes[sceneId].northOffset || 0);
+        workingYaw = config.yaw + (config.northOffset || 0) - (initialConfig.scenes[sceneId].northOffset || 0);
       } else {
         workingYaw = targetYaw;
       }
@@ -3119,14 +2900,7 @@ window.pannellum = (function (window, document, undefined) {
      * @param {object} [callbackArgs] - Arguments to pass to callback function
      * @returns {Viewer} `this`
      */
-    this.lookAt = function (
-      pitch,
-      yaw,
-      hfov,
-      animated,
-      callback,
-      callbackArgs
-    ) {
+    this.lookAt = function (pitch, yaw, hfov, animated, callback, callbackArgs) {
       animated = animated == undefined ? 1000 : Number(animated);
       if (pitch !== undefined) {
         this.setPitch(pitch, animated, callback, callbackArgs);
@@ -3184,10 +2958,7 @@ window.pannellum = (function (window, document, undefined) {
      */
     this.setHorizonRoll = function (roll) {
       config.horizonRoll = Math.min(90, Math.max(-90, roll));
-      renderer.setPose(
-        (config.horizonPitch * Math.PI) / 180,
-        (config.horizonRoll * Math.PI) / 180
-      );
+      renderer.setPose((config.horizonPitch * Math.PI) / 180, (config.horizonRoll * Math.PI) / 180);
       animateInit();
       return this;
     };
@@ -3211,10 +2982,7 @@ window.pannellum = (function (window, document, undefined) {
      */
     this.setHorizonPitch = function (pitch) {
       config.horizonPitch = Math.min(90, Math.max(-90, pitch));
-      renderer.setPose(
-        (config.horizonPitch * Math.PI) / 180,
-        (config.horizonRoll * Math.PI) / 180
-      );
+      renderer.setPose((config.horizonPitch * Math.PI) / 180, (config.horizonRoll * Math.PI) / 180);
       animateInit();
       return this;
     };
@@ -3333,10 +3101,7 @@ window.pannellum = (function (window, document, undefined) {
      * @returns {boolean} False if the scene is the current scene or if the scene doesn't exists, else true
      */
     this.removeScene = function (sceneId) {
-      if (
-        config.scene === sceneId ||
-        !initialConfig.scenes.hasOwnProperty(sceneId)
-      ) {
+      if (config.scene === sceneId || !initialConfig.scenes.hasOwnProperty(sceneId)) {
         return false;
       }
       delete initialConfig.scenes[sceneId];
@@ -3426,10 +3191,7 @@ window.pannellum = (function (window, document, undefined) {
           return false;
         }
         for (var i = 0; i < config.hotSpots.length; i++) {
-          if (
-            config.hotSpots[i].hasOwnProperty("id") &&
-            config.hotSpots[i].id === hotSpotId
-          ) {
+          if (config.hotSpots[i].hasOwnProperty("id") && config.hotSpots[i].id === hotSpotId) {
             // Delete hot spot DOM elements
             var current = config.hotSpots[i].div;
             while (current.parentNode != renderContainer) {
@@ -3447,11 +3209,7 @@ window.pannellum = (function (window, document, undefined) {
           if (!initialConfig.scenes[sceneId].hasOwnProperty("hotSpots")) {
             return false;
           }
-          for (
-            var i = 0;
-            i < initialConfig.scenes[sceneId].hotSpots.length;
-            i++
-          ) {
+          for (var i = 0; i < initialConfig.scenes[sceneId].hotSpots.length; i++) {
             if (
               initialConfig.scenes[sceneId].hotSpots[i].hasOwnProperty("id") &&
               initialConfig.scenes[sceneId].hotSpots[i].id === hotSpotId
@@ -3581,9 +3339,10 @@ window.pannellum = (function (window, document, undefined) {
       if (type in externalEventListeners) {
         // Reverse iteration is useful, if event listener is removed inside its definition
         for (var i = externalEventListeners[type].length; i > 0; i--) {
-          externalEventListeners[type][
-            externalEventListeners[type].length - i
-          ].apply(null, [].slice.call(arguments, 1));
+          externalEventListeners[type][externalEventListeners[type].length - i].apply(
+            null,
+            [].slice.call(arguments, 1)
+          );
         }
       }
     }
@@ -3602,42 +3361,14 @@ window.pannellum = (function (window, document, undefined) {
         dragFix.removeEventListener("dblclick", onDocumentDoubleClick, false);
         document.removeEventListener("mousemove", onDocumentMouseMove, false);
         document.removeEventListener("mouseup", onDocumentMouseUp, false);
-        container.removeEventListener(
-          "mousewheel",
-          onDocumentMouseWheel,
-          false
-        );
-        container.removeEventListener(
-          "DOMMouseScroll",
-          onDocumentMouseWheel,
-          false
-        );
-        container.removeEventListener(
-          "mozfullscreenchange",
-          onFullScreenChange,
-          false
-        );
-        container.removeEventListener(
-          "webkitfullscreenchange",
-          onFullScreenChange,
-          false
-        );
-        container.removeEventListener(
-          "msfullscreenchange",
-          onFullScreenChange,
-          false
-        );
-        container.removeEventListener(
-          "fullscreenchange",
-          onFullScreenChange,
-          false
-        );
+        container.removeEventListener("mousewheel", onDocumentMouseWheel, false);
+        container.removeEventListener("DOMMouseScroll", onDocumentMouseWheel, false);
+        container.removeEventListener("mozfullscreenchange", onFullScreenChange, false);
+        container.removeEventListener("webkitfullscreenchange", onFullScreenChange, false);
+        container.removeEventListener("msfullscreenchange", onFullScreenChange, false);
+        container.removeEventListener("fullscreenchange", onFullScreenChange, false);
         window.removeEventListener("resize", onDocumentResize, false);
-        window.removeEventListener(
-          "orientationchange",
-          onDocumentResize,
-          false
-        );
+        window.removeEventListener("orientationchange", onDocumentResize, false);
         container.removeEventListener("keydown", onDocumentKeyPress, false);
         container.removeEventListener("keyup", onDocumentKeyUp, false);
         container.removeEventListener("blur", clearKeys, false);
@@ -3645,16 +3376,8 @@ window.pannellum = (function (window, document, undefined) {
         dragFix.removeEventListener("touchstart", onDocumentTouchStart, false);
         dragFix.removeEventListener("touchmove", onDocumentTouchMove, false);
         dragFix.removeEventListener("touchend", onDocumentTouchEnd, false);
-        dragFix.removeEventListener(
-          "pointerdown",
-          onDocumentPointerDown,
-          false
-        );
-        dragFix.removeEventListener(
-          "pointermove",
-          onDocumentPointerMove,
-          false
-        );
+        dragFix.removeEventListener("pointerdown", onDocumentPointerDown, false);
+        dragFix.removeEventListener("pointermove", onDocumentPointerMove, false);
         dragFix.removeEventListener("pointerup", onDocumentPointerUp, false);
         dragFix.removeEventListener("pointerleave", onDocumentPointerUp, false);
       }
