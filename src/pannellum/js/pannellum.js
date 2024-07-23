@@ -175,7 +175,7 @@ window.pannellum = (function (window, document, undefined) {
 
     // Panorama info
     infoDisplay.container = document.createElement("div");
-    infoDisplay.container.className = "pnlm-panorama-info";
+    // infoDisplay.container.className = "pnlm-panorama-info";
     infoDisplay.title = document.createElement("div");
     infoDisplay.title.className = "pnlm-title-box";
     infoDisplay.container.appendChild(infoDisplay.title);
@@ -1196,8 +1196,6 @@ window.pannellum = (function (window, document, undefined) {
      * @param {PointerEvent} event - Document pointer up event.
      */
     function onDocumentPointerUp(event) {
-      if (draggingHotSpot && draggingHotSpot.dragHandlerFunc)
-        draggingHotSpot.dragHandlerFunc(event, draggingHotSpot.dragHandlerArgs);
       draggingHotSpot = null;
 
       if (event.pointerType == "touch") {
@@ -2145,7 +2143,9 @@ window.pannellum = (function (window, document, undefined) {
         uiContainer.appendChild(div);
       }
 
-      if (hs.createTooltipFunc) {
+      if (hs.renderHS) {
+        div.innerHTML = hs.renderHS;
+      } else if (hs.createTooltipFunc) {
         hs.createTooltipFunc(div, hs.createTooltipArgs);
       } else if (hs.text || hs.video || hs.image) {
         div.classList.add("pnlm-tooltip");
@@ -2189,7 +2189,6 @@ window.pannellum = (function (window, document, undefined) {
       if (hs.draggable) {
         // Handle mouse by container event listeners
         div.addEventListener("mousedown", function (e) {
-          if (hs.dragHandlerFunc) hs.dragHandlerFunc(e, hs.dragHandlerArgs);
           draggingHotSpot = hs;
         });
 
@@ -2198,7 +2197,6 @@ window.pannellum = (function (window, document, undefined) {
           document.documentElement.style.touchAction === ""
         ) {
           div.addEventListener("pointerdown", function (e) {
-            if (hs.dragHandlerFunc) hs.dragHandlerFunc(e, hs.dragHandlerArgs);
             draggingHotSpot = hs;
           });
         }
@@ -2208,7 +2206,6 @@ window.pannellum = (function (window, document, undefined) {
           moveHotSpot(hs, e.targetTouches[0]);
         });
         div.addEventListener("touchend", function (e) {
-          if (hs.dragHandlerFunc) hs.dragHandlerFunc(e, hs.dragHandlerArgs);
           draggingHotSpot = null;
         });
       }

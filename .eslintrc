@@ -239,7 +239,6 @@
             2
         ],
         "react/jsx-key": "warn",
-        "react/jsx-max-props-per-line": "warn",
         "react/jsx-no-bind": [
             "warn",
             {
@@ -280,7 +279,7 @@
         "react/style-prop-object": "warn",
         "react/void-dom-elements-no-children": "warn",
         "jsx-a11y/aria-role": "warn",
-        "jsx-a11y/img-has-alt": "warn",
+        // "jsx-a11y/img-has-alt": "warn",
         "jsx-a11y/img-redundant-alt": "warn",
         "jsx-a11y/no-access-key": "warn"
     }
