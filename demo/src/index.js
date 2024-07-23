@@ -1,27 +1,16 @@
-import React, { Component } from 'react';
-import { render } from 'react-dom';
+import React from "react";
+import { render } from "react-dom";
 import "./index.css";
-import Header  from "./components/Header";
+import Header from "./components/Header";
 import ImageDemo from "./components/ImageDemo";
-import VideoDemo from "./components/VideoDemo";
 
+const Demo = () => {
+  return (
+    <div className="app">
+      <Header />
+      <ImageDemo />
+    </div>
+  );
+};
 
-
-
-class Demo extends Component {
-  
-
-  render() {
-    return (
-      <div className="app">
-        <Header />
-        <ImageDemo />
-        <VideoDemo />
-      </div>
-    );
-  }
-
-}
-
-
-render(<Demo />, document.querySelector('#demo'));
+render(<Demo />, document.querySelector("#demo"));
